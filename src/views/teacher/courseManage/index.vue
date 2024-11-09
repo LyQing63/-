@@ -334,73 +334,260 @@ import type { FormInstance, UploadProps } from "element-plus";
 import type { CourseInfo } from "@/types/course";
 import { CourseTypeMap, ExamTypeMap, CourseStatusMap } from "@/types/course";
 
-// 统计数据
+// 在 script setup 中添加
 const courseStats = ref([
   {
-    title: "总课程数",
-    value: "12",
-    icon: "Collection",
+    title: "我的课程",
+    value: 8,
+    icon: "Reading",
     color: "text-primary",
   },
   {
     title: "进行中",
-    value: "5",
+    value: 3,
     icon: "VideoPlay",
     color: "text-success",
   },
   {
-    title: "已结课",
-    value: "3",
-    icon: "Check",
-    color: "text-info",
+    title: "待审核",
+    value: 2,
+    icon: "Timer",
+    color: "text-warning",
   },
   {
-    title: "总学生数",
-    value: "256",
-    icon: "User",
-    color: "text-warning",
+    title: "已结束",
+    value: 3,
+    icon: "CircleCheck",
+    color: "text-info",
   },
 ]);
 
+// 课程类型映射
+const CourseTypeMap = {
+  required: "必修课",
+  elective: "选修课",
+  optional: "任选课",
+};
+
+// 考核方式映射
+const ExamTypeMap = {
+  exam: "考试",
+  project: "大作业",
+  report: "课程报告",
+  design: "课程设计",
+};
+
+// 课程状态映射
+const CourseStatusMap = {
+  not_started: "未开始",
+  in_progress: "进行中",
+  ended: "已结束",
+  pending: "待审核",
+  rejected: "已驳回",
+};
+
+const courseList = ref([
+  {
+    id: 1,
+    name: "数据结构",
+    code: "CS201",
+    type: "required",
+    credit: 4,
+    hours: 64,
+    semester: "2023-2024-2",
+    description:
+      "本课程讲授数据结构的基本概念、基本原理和基本方法，包括线性表、栈、队列、树、图等数据结构的定义、存储结构、运算以及应用。",
+    capacity: 60,
+    enrolled: 55,
+    time: "周二 3-4节",
+    location: "教学楼B202",
+    image: "https://picsum.photos/id/2/400/200",
+    status: "in_progress",
+    examType: "exam",
+    materials: [
+      { name: "教学大纲.pdf", url: "#", size: "521KB" },
+      { name: "课件第一章.pptx", url: "#", size: "2.3MB" },
+      { name: "实验指导书.doc", url: "#", size: "1.1MB" },
+    ],
+    students: [
+      {
+        id: "S001",
+        name: "张三",
+        className: "计科2101",
+        attendance: 95,
+        grade: 88,
+      },
+      {
+        id: "S002",
+        name: "李四",
+        className: "计科2102",
+        attendance: 88,
+        grade: 92,
+      },
+    ],
+    schedule: [
+      { week: 1, content: "绪论", status: "completed" },
+      { week: 2, content: "线性表", status: "completed" },
+      { week: 3, content: "栈和队列", status: "in_progress" },
+      { week: 4, content: "树", status: "pending" },
+      { week: 5, content: "图", status: "pending" },
+    ],
+    createTime: "2024-01-16 09:00:00",
+    updateTime: "2024-03-14 16:20:00",
+  },
+  {
+    id: 2,
+    name: "计算机网络",
+    code: "CS301",
+    type: "required",
+    credit: 3,
+    hours: 48,
+    semester: "2023-2024-2",
+    description:
+      "本课程系统讲授计算机网络的基本概念、基本原理和基本方法。引导学生深入了解网络协议的分层结构，介绍物理层、数据链路层、网络层、运输层和应用层的主要协议。",
+    capacity: 50,
+    enrolled: 48,
+    time: "周一 1-2节",
+    location: "教学楼A101",
+    image: "https://picsum.photos/id/1/400/200",
+    status: "in_progress",
+    examType: "exam",
+    materials: [
+      { name: "教学大纲.pdf", url: "#", size: "498KB" },
+      { name: "实验指导书.pdf", url: "#", size: "1.5MB" },
+    ],
+    students: [
+      {
+        id: "S003",
+        name: "王五",
+        className: "网络2101",
+        attendance: 92,
+        grade: 85,
+      },
+    ],
+    schedule: [
+      { week: 1, content: "计算机网络概述", status: "completed" },
+      { week: 2, content: "物理层", status: "in_progress" },
+      { week: 3, content: "数据链路层", status: "pending" },
+    ],
+    createTime: "2024-01-15 10:00:00",
+    updateTime: "2024-03-15 15:30:00",
+  },
+  {
+    id: 3,
+    name: "Web开发技术",
+    code: "SE301",
+    type: "elective",
+    credit: 2,
+    hours: 32,
+    semester: "2023-2024-2",
+    description:
+      "本课程介绍现代Web开发技术，包括HTML5、CSS3、JavaScript、Vue.js等前端技术，以及Node.js、Express等后端技术。",
+    capacity: 40,
+    enrolled: 35,
+    time: "周三 5-6节",
+    location: "实验楼C305",
+    image: "https://picsum.photos/id/3/400/200",
+    status: "pending",
+    examType: "project",
+    materials: [
+      { name: "课程说明.pdf", url: "#", size: "325KB" },
+      { name: "示例代码.zip", url: "#", size: "5.2MB" },
+    ],
+    students: [],
+    schedule: [
+      { week: 1, content: "Web概述", status: "pending" },
+      { week: 2, content: "HTML5与CSS3", status: "pending" },
+      { week: 3, content: "JavaScript基础", status: "pending" },
+    ],
+    createTime: "2024-02-01 14:00:00",
+    updateTime: "2024-03-10 11:30:00",
+  },
+]);
+
+// 分页相关
+const currentPage = ref(1);
+const pageSize = ref(10);
+const total = ref(courseList.value.length);
+
 // 搜索表单
-const searchForm = reactive({
+const searchForm = ref({
   name: "",
   type: "",
   examType: "",
   status: "",
 });
 
-// 分页相关
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(100);
+// 课程表单
+const courseForm = ref({
+  name: "",
+  code: "",
+  type: "",
+  credit: undefined,
+  hours: undefined,
+  semester: "",
+  description: "",
+  capacity: undefined,
+  time: "",
+  location: "",
+  image: "",
+  examType: "",
+  materials: [],
+});
 
-// 课程列表数据
-const courseList = ref<CourseInfo[]>([
-  // ... 使用之前生成的模拟数据 ...
-]);
+// 表单验证规则
+const formRules = {
+  name: [
+    { required: true, message: "请输入课程名称", trigger: "blur" },
+    { min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" },
+  ],
+  code: [
+    { required: true, message: "请输入课程编码", trigger: "blur" },
+    {
+      pattern: /^[A-Z]{2,}\d{3}$/,
+      message: "请输入正确的课程编码格式",
+      trigger: "blur",
+    },
+  ],
+  type: [{ required: true, message: "请选择课程类型", trigger: "change" }],
+  credit: [
+    { required: true, message: "请输入学分", trigger: "blur" },
+    {
+      type: "number",
+      min: 1,
+      max: 10,
+      message: "学分在 1 到 10 之间",
+      trigger: "blur",
+    },
+  ],
+  hours: [
+    { required: true, message: "请输入学时", trigger: "blur" },
+    {
+      type: "number",
+      min: 16,
+      max: 96,
+      message: "学时在 16 到 96 之间",
+      trigger: "blur",
+    },
+  ],
+  semester: [{ required: true, message: "请选择学期", trigger: "change" }],
+  capacity: [
+    { required: true, message: "请输入容量", trigger: "blur" },
+    {
+      type: "number",
+      min: 1,
+      max: 200,
+      message: "容量在 1 到 200 之间",
+      trigger: "blur",
+    },
+  ],
+  examType: [{ required: true, message: "请选择考核方式", trigger: "change" }],
+};
 
 // 对话框相关
 const dialogVisible = ref(false);
 const dialogType = ref<"add" | "edit">("add");
 const formRef = ref<FormInstance>();
-
-// 课程表单
-const courseForm = reactive({
-  id: "",
-  name: "",
-  code: "",
-  type: "",
-  examType: "",
-  credit: 0,
-  hours: 0,
-  capacity: 0,
-  status: "",
-  time: "",
-  location: "",
-  image: "",
-  description: "",
-});
 
 // 表单验证规则
 const rules = {
@@ -632,7 +819,6 @@ const handleStudents = (row: CourseInfo) => {
           color: var(--el-text-color-secondary);
           display: -webkit-box;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
           overflow: hidden;
         }
       }

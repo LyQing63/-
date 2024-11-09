@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: () => import("../layouts/BasicLayout.vue"),
-    redirect: "/dashboard",
+    redirect: "/login",
     children: [
       // 学生路由
       {
